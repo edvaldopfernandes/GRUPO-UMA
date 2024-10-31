@@ -1,0 +1,791 @@
+<apex:page renderAs="pdf" standardStylesheets="false" standardController="Quote" extensions="QuotePDFController"
+           showHeader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false">
+    <html lang="en">
+        
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <style>
+                @page {
+                @top-center {
+                content: element(header);
+                }
+                
+                @bottom-center {
+                content: element(footer);
+                }
+                }
+                
+                div.header {
+                padding: 10px;
+                padding-top: 0px;
+                position: running(header);
+                margin-bottom: 10px;
+                }
+                
+                div.footer {
+                padding: 15px;
+                position: running(footer);
+                padding-top: 7px;
+                }
+                
+                @page {
+                size: A4;
+                margin-top: 1cm;
+                margin-left: 0cm;
+                margin-right: 0cm;
+                margin-bottom: 1cm;
+                }
+                
+                body {
+                font-family: Arial, Helvetica, sans-serif;
+                }
+                
+                p {
+                margin: 0;
+                }
+                
+                .informacion {
+                font-size: 11px;
+                }
+                
+                .mostrar {
+                visibility: visible;
+                }
+                
+                .ocultar {
+                visibility: hidden;
+                }
+                
+                .bajaj {
+                background-color: #2457a4 !important;
+                }
+                
+                .triumph {
+                background-color: #000 !important;
+                }
+                
+                .block {
+                display: block;
+                }
+                
+                .none {
+                display: none;
+                }
+                
+                .bajajTabla {
+                color: #2457a4;
+                }
+                
+                .triumphTabla {
+                color: #000;
+                }
+                
+                .ktmTabla {
+                color: #FF6600;
+                }
+            </style>
+        </head>
+        
+        <body style="width: 100%; margin-left: 0;">
+            <!-- HEADER --->
+            <div class="header">
+                <table cellpadding="0" cellspacing="0" style="width: 100%; margin: 0 auto;">
+                    <colgroup>
+                        <col span="1" />
+                        <col span="1" />
+                    </colgroup>
+                    <tr>
+                        <td align="left">
+                            <apex:image style="" width="100px" value="{!URLFOR($Resource.LogoUMA)}" />
+                        </td>
+                        <td align="right">
+                            <p style="margin-top: 20px; height: 20px;">
+                                <apex:image width="130px" styleClass="{!IF(moto.marca == 'Triumph','mostrar','ocultar')}"
+                                            value="{!URLFOR($Resource.TriumphUMA)}" />
+                            </p>
+                            
+                            <p style="margin-right: 10px; height: 25px; margin-top: -20px;">
+                                <apex:image style="" width="120px"
+                                            styleClass="{!IF(moto.marca =='Bajaj' && asesor.pais == 'Colombia' ,'mostrar','ocultar')}"
+                                            value="{!URLFOR($Resource.BajajUMA)}" />
+
+                            </p>
+                            
+                            <p style="margin-right: 10px; height: 25px; margin-top: -20px;">
+                              <apex:image style="" width="120px"
+                                            styleClass="{!IF(moto.marca =='Bajaj' && asesor.pais != 'Colombia' ,'mostrar','ocultar')}"
+                                            value="{!URLFOR($Resource.BajajCAM)}" />
+                            </p>
+                            
+                            <apex:image style="margin-top: -20px; margin-bottom: 30px;" width="80px"
+                                        styleClass="{!IF(moto.marca == 'KTM','mostrar','ocultar')}"
+                                        value="{!URLFOR($Resource.KTMLogo)}" />
+                            
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+            <!-- FOOTER --->
+            <div class="footer"
+                 style="width: 100%; margin: 0; margin-left: -15px; height: 1cm; {!IF(moto.marca == 'Bajaj','background-color: #2457a4 !important;',IF(moto.marca == 'Triumph','background-color: #000 !important;', 'background-color: #FF6600 !important;'))}">
+                <table styleClass="{!IF(moto.marca == 'Bajaj','bajaj','triumph')}" cellpadding="0" cellspacing="0"
+                       style="width: 100%;  height: 1cm; font-size: 12px;">
+                    <colgroup>
+                        <col span="1" style="width: 33%;" />
+                        <col span="1" style="width: 33%;" />
+                        <col span="1" style="width: 34%;" />
+                    </colgroup>
+                    <tbody valign="middle">
+                        <tr>
+                            <td align="center" valign="center" style="color: #fff;">
+                                <p style="vertical-align: middle; font-style: italic;"> 
+                                    {!IF(moto.marca ==
+                                    'Bajaj' ,'www.grupouma.com',IF(moto.marca ==
+                                    'Triumph','www.triumphcolombia.com','https://marcaspremiumuma.com/ktm'))}
+                                </p>
+                            </td>
+                            <td align="center" valign="center" style="color: #fff; ">
+                                <p style="vertical-align: top; {!IF(moto.marca == 'Bajaj','visibility: visible;','visibility: hidden;')}">
+                                    <!--  <apex:image style="padding-top: 3px; " width="13px"
+value="{!URLFOR($Resource.Whatsapp)}" /> <span
+style="vertical-align: middle; font-style: italic; "> {!IF( (moto.marca ==
+'Bajaj') && (asesor.pais == 'Colombia') ,'+57 3232540428',IF(moto.marca ==
+'Bajaj' && (asesor.pais == 'Costa Rica') ,'+506 61682037',IF(moto.marca ==
+'Bajaj' && (asesor.pais == 'Guatemala'),'+502 22267777',IF(moto.marca ==
+'Bajaj' && (asesor.pais == 'Honduras'),'+504 2570-6620', IF(moto.marca ==
+'Bajaj' && (asesor.pais == 'El Salvador'),'+503 2254 3700', '+505 2298-0380' )))))} </span> -->
+                                </p>
+                            </td>
+                            <td align="center" valign="center" style="color: #fff;">
+                                <p style="vertical-align: top;">
+                                    <a style="text-decoration: none; position: absolute; right: 240px;  width: 13px; {!IF(asesor.pais != 'Colombia','visibility: visible;','visibility: hidden;')}" target="_blank"
+                                       href=" {!IF(moto.marca == 'Bajaj' ,'',IF(moto.marca == 'Triumph','https://www.tiktok.com/@triumphmotorcyclescol',''))}">
+                                        
+                                        <apex:image style="padding-top: 3px; padding-right:3px; {!IF(asesor.pais != 'Colombia','visibility: visible;','visibility: hidden;')} "
+                                                    width="13px" value="{!URLFOR($Resource.TikTok)}" />
+                                    </a>
+                                    
+                                    <a style="text-decoration: none; width: 13px; position: absolute; right: 225px;  " target="_blank"
+                                       href="{!IF( (moto.marca ==
+                                             'Bajaj') && (asesor.pais == 'Colombia') ,'https://www.facebook.com/BajajColombiaOficial',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Costa Rica') ,'https://www.facebook.com/BajajCostaR/',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Guatemala'),'https://www.facebook.com/BajajGuatemala/',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Honduras'),'https://www.facebook.com/BajajHonduras/', IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'El Salvador'),'https://www.facebook.com/BajajElSalvador/', 'https://www.facebook.com/BajajNic/' )))))}">
+                                        
+                                        <apex:image style="padding-top: 3px; padding-right:3px; {!IF(moto.marca == 'Bajaj','visibility: visible;','visibility: hidden;')}  "
+                                                    width="13px" value="{!URLFOR($Resource.Facebook)}" />
+                                        
+                                    </a>
+                                    
+                                    <a style="text-decoration: none; width: 13px; position: absolute; right: 210px; {!IF(moto.marca == 'Triumph','visibility: visible;',IF(moto.marca == 'Bajaj','visibility: visible;','visibility: hidden;'))} " target="_blank"
+                                       href="{!IF( (moto.marca ==
+                                             'Bajaj') && (asesor.pais == 'Colombia') ,'https://www.youtube.com/channel/UC9yj89T67cDsLWZBMDn3FJA',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Costa Rica') ,'https://www.youtube.com/bajajcentroamerica',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Guatemala'),'https://www.youtube.com/channel/UCe_mR_5YjIS1NgTUpX4SSeA',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Honduras'),'https://www.youtube.com/bajajcentroamerica', IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'El Salvador'),'https://www.youtube.com/bajajcentroamerica', 'https://www.youtube.com/bajajcentroamerica' )))))}">
+                                        
+                                        <apex:image style="padding-top: 3px; padding-right:3px; {!IF(moto.marca == 'Bajaj','visibility: visible;','visibility: hidden;')} "
+                                                    width="13px" value="{!URLFOR($Resource.Youtube)}" />
+                                    </a>
+                                    <a style="text-decoration: none; width: 13px; height: 13px; position: absolute; right: 195px; " target="_blank"
+                                       href="{!IF( (moto.marca ==
+                                             'Bajaj') && (asesor.pais == 'Colombia') ,'https://www.instagram.com/bajajcolombiaoficial/',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Costa Rica') ,'https://www.instagram.com/bajaj.costarica/',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Guatemala'),'https://www.instagram.com/bajajguatemala/',IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'Honduras'),'https://www.instagram.com/bajajhonduras/', IF(moto.marca ==
+                                             'Bajaj' && (asesor.pais == 'El Salvador'),'https://www.instagram.com/bajajelsalvador/', 'https://www.instagram.com/bajajnicaragua/' )))))}">
+                                        <apex:image style="padding-top: 3px; " width="13px"
+                                                    value="{!URLFOR($Resource.Instagram)}" />
+                                    </a> <span style="vertical-align: middle; font-style: italic; "> {!IF( (moto.marca =='Bajaj') && (asesor.pais == 'Colombia') ,'Bajaj Colombia','Bajaj Centroamérica')} </span>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    
+                </table>
+            </div>
+            <!-- PROPUESTA NRO Y DATOS ASESOR --->
+            <table cellpadding="0" cellspacing="0"
+                   style="width: 100%; margin-left: 10px; {!IF(moto.marca == 'Bajaj','padding-top: 30px;',IF(moto.marca == 'Triumph','padding-top: 25px;',  'padding-top: 20px;'))}">
+                <colgroup>
+                    <col span="1" />
+                    <col span="1" />
+                </colgroup>
+                <tr style="">
+                    <td class="informacion" align="left" style="width: 40%;">
+                        <p>
+                            Fecha generación&nbsp;<apex:outputText value="{0,date,dd/MM/yyyy}">
+                            <apex:param value="{!Quote.CreatedDate}" />
+                            </apex:outputText>
+                            
+                        </p>
+                    </td>
+                    
+                </tr>
+            </table>
+            
+            <!--  INFORMACION GENERAL --->
+            <div>
+                
+                <table cellpadding="0" cellspacing="0" style="margin-left: 10px;  margin-right: 10px;  width: 100%;">
+                    
+                    <tr align="center" >
+                        
+                        <td align="left" class="img-tabla" style="width: 30%; height: 500px; max-height: 600px;">
+                            <div style="background: #333; color: #fff; max-height: 80px; height: 80px; font-size: 14px; padding: 10px; ">
+                                <p>
+                                    Hola, <b style="text-transform: uppercase;"> {!cliente.nombre} </b>
+                                </p>
+                                <br/>
+                                <p>
+                                    ¡Este es el nuevo presupuesto de tu próxima motocicleta!
+                                </p>
+                            </div>
+                            <apex:variable var="imgDerecha" value="{!moto.derechaURL}" />
+                            <div style="">
+                                <apex:image style="{!IF(moto.derechaURL != null,'display: block;','display: none; ')}  padding: 0px; text-align: center; border: 0px; height: 200px; width: 300px; object-fit: contain;"
+                                            value="{!moto.derechaURL}" />
+                            </div>
+                            <div style="{!IF(asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')} text-align: right; margin-left: 50px;">
+                                <apex:image style="{!IF(moto.sloganCAM != null,'display: block;','display: none; ')}  padding: 0px; border: 0px; height: 50px; width: 200px; object-fit: contain;"
+                                            value="{!moto.sloganCAM}" />
+                            </div>
+                            <div>
+                                <table style="max-height: 70px; height: 70px;">
+                                    <tr>
+                                        <td>
+                                            <apex:image style="vertical-align: middle; " value="{!URLFOR($Resource.CuentaIcono)}" />
+                                        </td>
+                                        <td>
+                                            <p style="text-transform: uppercase; font-weight: bold; vertical-align: middle; font-size: 15px; ">
+                                                {!cliente.nombre}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                
+                                <p style="font-size: 14px; padding-left: 10px;">
+                                    Email: {!cliente.email}
+                                </p>
+                                <p style="font-size: 14px; padding-left: 10px;">
+                                    Cédula: {!cliente.cedula}
+                                </p>
+                            </div>
+                            <br/>
+                            <div>
+                                <!--  <p style="text-transform: uppercase; font-weight: bold; vertical-align: middle; ">
+<apex:image style="vertical-align: middle; " value="{!URLFOR($Resource.TiendaIcono)}" />
+{!asesor.pdv}
+</p> -->
+                                <table style="max-height: fit-content; height: 70px;">
+                                    <tr>
+                                        <td>
+                                            <apex:image style="vertical-align: middle; " value="{!URLFOR($Resource.CuentaIcono)}" />
+                                        </td>
+                                        <td>
+                                            <p style="text-transform: uppercase; font-weight: bold; vertical-align: middle; font-size: 15px; ">
+                                                {!asesor.pdv}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                
+                                <p style="font-size: 14px; padding-left: 10px;">
+                                    Dirección: {!asesor.direccion}
+                                </p> <br/> <br/>
+                                <p style="font-size: 14px; padding-left: 10px;">
+                                    Asesor de Tienda: {!asesor.nombre}
+                                </p>
+                                <p style="font-size: 14px; padding-left: 10px;">
+                                    Email: {!asesor.email}
+                                </p>
+                                <p style="font-size: 14px; padding-left: 10px;">
+                                    Celular: {!asesor.celular}
+                                </p>
+                            </div>
+                            
+                        </td>
+                        
+                        
+                        <td align="right" class="img-tabla" style="width: 50%; height: 500px; max-height: 600px;">
+                            <!-- DETALLE DE LA COTIZACION -->
+                            <div style="margin-top: -12px;">
+                                <div style="color: #2457a4; text-align: left; font-size: 16px; width: 100%; padding-left: 22px;">
+                                    <p style="margin-bottom: 0;">
+                                        {!IF(asesor.pais == 'Colombia', 'PRESUPUESTO', 'COTIZACIÓN')}
+                                    </p>
+                                    <p style="font-weight: bold; margin-top: 5px;">
+                                        {!asesor.pdv}
+                                    </p>
+                                </div>
+                                
+                                
+                                 <div style="{!IF(asesor.pais != 'Colombia', 'visibility: visible; min-height: 700px;', 'visibility: hidden; min-height: 700px;')}">
+                                    <table align="center" class="datos" cellpadding="5" cellspacing="0" style="font-size: 14px; width: 90%;">
+                                        <tr style="background: #EFEBEA;  height: 25px; width: 100%;">
+                                            <td style="color: #000; text-align: left; text-decoration: uppercase; width: 100%;">
+                                                {!moto.nombre}
+                                            </td>
+                                            <td style="">
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                Año modelo
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!moto.anyomodelo}
+                                            </td>
+                                        </tr>
+                                        <!-- Solo valido para CAM -->
+                                        <tr style="">
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                Precio unitario
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!moto.precio}
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr  style="">
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                Cantidad
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!moto.cantidad}
+                                            </td>
+                                        </tr>
+                                        <tr style=" background: #1462AC; color: #fff; height: 55px; width: 100%;">
+                                            <td
+                                                style="text-align: left; font-size: 20px;">
+                                                <p>
+                                                    TOTAL
+                                                </p>
+                                               <p style="font-size: 11px;">
+                                                   PRECIO INCLUYE IVA
+                                                </p>
+                                            </td>
+                                            <td style="text-align: right; font-size: 20px;">
+                                                
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!cotizacion.total}"/>
+                                            </td>
+                                            
+                                        </tr>
+                                        
+                                        <!------------->
+                                        <tr style="background: #EFEBEA; min-height: 30px; ">
+                                            <td style="color: #000;  text-align: left;">
+                                                BENEFICIOS
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr style="background: #EFEBEA; min-height: 40px;">
+                                            <td style="color: #000; text-align: left;">
+                                                <p>
+                                                    <apex:outputText value="{!Quote.Accesorio_adicional__c}" />  
+                                                </p>
+                                                      <p>
+                                                     <apex:outputText value="{!cliente.beneficiosPorPais}" /> 
+                                                </p>
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr style="background: #fff;">
+                                        <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr style="background: #EFEBEA; height: 25px; width: 100%;">
+                                            <td style="color: #000;  text-align: left; width: 100%;">
+                                                MÉTODO DE PAGO
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr style="">
+                                            <td style="color: #000; text-align: left; ">
+                                                {!opp.metodoPago}
+                                            </td>
+                                            <td style="color: #000; text-align: right; font-size:13px; {!IF(opp.financiera != null && asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                {!opp.financiera}
+                                            </td>
+                                        </tr>
+                                        <tr style="margin: 0;">
+                                            <td style="color: #000; text-align: left; ">
+                                                Cuota inicial
+                                            </td>
+                                            <td style="color: #000; text-align: right; font-size:20px; {!IF(opp.cuotaInicial != null && asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!opp.cuotaInicial}"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="{!IF(cotizacion.valorCuotaAprox != null && asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                            <td style="color: #000;  text-align: left;">
+                                                Cuota estimada
+                                            </td>
+                                            <td style="color: #000; text-align: right; font-size: 20px; {!IF(cotizacion.valorCuotaAprox != null && asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!cotizacion.valorCuotaAprox}"/>
+                                            </td> 
+                                        </tr>
+                                        <tr style="{!IF(opp.nroCuotas != null, 'visibility: visible;', 'visibility: hidden;')}">
+                                            <td
+                                                style=" color: #000;  text-align: left; {!IF(opp.nroCuotas != null && asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                Plazo&nbsp; <apex:outputText value="{!opp.nroCuotas}"/> meses
+                                            </td>
+                                            
+                                        </tr> 
+                                        
+
+                                    </table>
+                                    <table align="center" class="datos" cellpadding="5" cellspacing="0" style="font-size: 14px; width: 90%;">
+                                        <tr style="background: #EFEBEA; min-height: 200px;  width: 100%;">
+                                            <td
+                                                style="color: #000; text-align: left; width: 100%;">
+                                                <div style="background: #EFEBEA; min-height: 200px;  width: 100%;">
+                                                    <p>
+                                                        OBSERVACIONES:
+                                                    </p>
+                                                    <p style="margin-top: 2px; width: 100%;">
+                                                        <apex:outputText value="{!Quote.Observaciones__c}"/>
+                                                    </p>
+                                                    <p>
+                                                        <apex:outputText value="{!promoFinanciera}" />
+                                                    </p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div style="{!IF(asesor.pais == 'Colombia', 'visibility: visible; margin-top: -695px; min-height: 700px;', 'visibility: hidden; margin-top: -700px; min-height: 700px;')}">
+                                    <table align="center" class="datos" cellpadding="5" cellspacing="0" style="font-size: 14px; width: 90%;">
+                                        <tr style="background: #EFEBEA; height: 25px; width: 100%; ">
+                                            <td style="color: #000; text-align: left; text-decoration: uppercase;">
+                                                {!moto.nombre}
+                                            </td>
+                                            <td style="color: #000; text-align: right; ">
+                                                
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!moto.precio}"/> 
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                Año modelo
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!moto.anyomodelo}
+                                            </td>
+                                        </tr>
+                                        <tr style="background: #EFEBEA; height: 25px; {!IF(asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')} ">
+                                            <td style="color: #000;  text-align: left;">
+                                                DESCUENTOS
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                
+                                                <p>
+                                                    {!asesor.moneda}&nbsp; -<apex:outputText value="{!moto.descuentoProd}"/>
+                                                </p>
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                
+                                            </td>
+                                        </tr> 
+                                        <tr>
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                
+                                            </td>
+                                        </tr> 
+                                        <tr style="background: #EFEBEA; height: 25px; ">
+                                            <td style="color: #000;  text-align: left;">
+                                                IMPUESTOS
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                
+                                                {!asesor.moneda}&nbsp;<apex:outputText value="{!cotizacion.impuestoCotizacion}" />  
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                I.V.A ({!cliente.impuestoPais}%)
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!asesor.moneda}&nbsp;<apex:outputText value="{!moto.valorIVAProd}" /> 
+                                            </td>
+                                        </tr>
+                                        <tr style="{!IF(moto.impuesto != '0' && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                            <td
+                                                style="color: #000; text-align: left;">
+                                                Impuesto al consumo (8%)
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!asesor.moneda}&nbsp;<apex:outputText value="{!moto.impuesto}" /> 
+                                            </td>
+                                        </tr>
+                                        <tr style="background: #EFEBEA; height: 25px;">
+                                            <td style="color: #000;  text-align: left;">
+                                                ITEMS ADICIONALES
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!cotizacion.precioAccesorio}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="color: #000; text-align: left;">
+                                                <apex:outputText value="{!Quote.Accesorio_adicional__c}" />  
+                                            </td>
+                                            <td style="color: #000; text-align: right;">
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!cotizacion.precioAccesorio}"/>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr style="background: #EFEBEA; height: 25px; width: 100%;">
+                                            <td style="color: #000;  text-align: left; width: 100%;">
+                                                MÉTODO DE PAGO
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr style="">
+                                            <td style="color: #000; text-align: left; ">
+                                                {!opp.metodoPago}
+                                            </td>
+                                            <td style="color: #000; text-align: right; font-size:13px; {!IF(opp.financiera != null && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                {!opp.financiera}
+                                            </td>
+                                        </tr>
+                                        <tr style="margin: 0;">
+                                            <td style="color: #000; text-align: left; ">
+                                                Cuota inicial
+                                            </td>
+                                            <td style="color: #000; text-align: right; font-size:20px; {!IF(opp.cuotaInicial != null && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!opp.cuotaInicial}"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="{!IF(cotizacion.valorCuotaAprox != null && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                            <td style="color: #000;  text-align: left;">
+                                                Cuota estimada
+                                            </td>
+                                            <td style="color: #000; text-align: right; font-size: 20px; {!IF(cotizacion.valorCuotaAprox != null && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!cotizacion.valorCuotaAprox}"/>
+                                            </td> 
+                                        </tr>
+                                        <tr style="{!IF(opp.nroCuotas != null && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                            <td
+                                                style=" color: #000;  text-align: left; {!IF(opp.nroCuotas != null && asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')}">
+                                                Plazo&nbsp; <apex:outputText value="{!opp.nroCuotas}"/> meses
+                                            </td>
+                                            
+                                        </tr> 
+                                        
+                                        <tr style=" background: #1462AC; color: #fff; height: 35px; width: 100%;">
+                                            <td
+                                                style="text-align: left; font-size: 20px;">
+                                                TOTAL
+                                            </td>
+                                            <td style="text-align: right; font-size: 20px;">
+                                                
+                                                {!asesor.moneda}&nbsp; <apex:outputText value="{!cotizacion.total}"/>
+                                            </td>
+                                            
+                                        </tr>
+
+                                    </table>
+                                    <table align="center" class="datos" cellpadding="5" cellspacing="0" style="font-size: 14px; width: 90%;">
+                                        <tr style="background: #EFEBEA; min-height: 200px;  width: 100%;">
+                                            <td
+                                                style="color: #000; text-align: left; width: 100%;">
+                                                <div style="background: #EFEBEA; min-height: 200px;  width: 100%;">
+                                                    <p>
+                                                        OBSERVACIONES:
+                                                    </p>
+                                                    <p style="margin-top: 2px; width: 100%;">
+                                                        <apex:outputText value="{!Quote.Observaciones__c}"/>
+                                                    </p>
+                                                    <p>
+                                                        <apex:outputText value="{!promoFinanciera}" />
+                                                    </p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                            
+                        </td>
+                        
+                    </tr>
+                    
+                </table>
+            </div>
+            <!-- ESPECIFICACIONES TECNICAS -->
+            <div style=" margin-right: 12px;">
+                <table cellpadding="0" cellspacing="0" style="margin-top: 20px !important; margin-left: auto;  width: 100%; ">
+                    <tr align="center" >
+                        <td align="left" class="img-tabla" style=" width: 45%; ">
+                        </td>
+                        <td align="right" class="img-tabla" style="width: 50%;">
+                            <!-- FICHA TECNICA --->
+                            <div style=" background: #FFF;">
+                                <!-- CHASIS DETALLE -->
+                                <div style="background: #1462AC; color: #fff; height: 30px; text-align: center; font-size: 14px; line-height: 30px;">
+                                    
+                                    <p style="letter-spacing: 4px;">
+                                        ESPECIFICACIONES TÉCNICAS
+                                    </p>
+                                </div>
+                                <table class="datos" cellpadding="2" cellspacing="0" style="font-size: 12px; width: 100%;">
+                                    <colgroup>
+                                        <col span="1" style="width: 40%;" />
+                                        <col span="1" style="width: 60%;" />
+                                    </colgroup>
+                                    <!-- <tr>
+<td  style="{!IF(moto.marca == 'Bajaj','color: #2457a4;',IF(moto.marca == 'Triumph','color: #000;', 'color: #000;' ))} font-weight: bold; border-bottom: 1px solid #333;">
+>> CAPACIDAD DEL TANQUE
+</td>
+<td style="border-bottom: 1px solid #333; text-align: right;">
+{!moto.cajaTipo}
+</td>
+</tr> -->
+                                    <tr style="color: #333;">
+                                        <td  style="color: #333; border-bottom: 1px solid #333; text-align:left;">
+                                            Cilindraje
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333; text-align: right; ">
+                                            {!moto.cilindrada}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td  style="color: #333;  border-bottom: 1px solid #333; text-align:left;">
+                                            Torque
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.diametro}
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+<td  style="color: #333; font-weight: bold; border-bottom: 1px solid #333;">
+Suspensión trasera
+</td>
+<td style="border-bottom: 1px solid #333;">
+{!moto.suspensionTrasera}
+</td>
+</tr> -->
+                                    <tr>
+                                        <td  style="color: #333; border-bottom: 1px solid #333; text-align:left;">
+                                            Potencia
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.potenciaMax}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td  style="color: #333; border-bottom: 1px solid #333; text-align:left;">
+                                            Arranque
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.carrera} </td>
+                                    </tr>
+                                    <tr>
+                                        <td  style="color: #333;  border-bottom: 1px solid #333; text-align:left;">
+                                            Peso
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.parMax}
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
+<td  style="color: #333; font-weight: bold; border-bottom: 1px solid #333;">
+Suspensión delantera
+</td>
+<td style="border-bottom: 1px solid #333;">
+{!moto.alimentacion}
+</td>
+</tr> -->
+                                    <tr>
+                                        <td  style="color: #333;  border-bottom: 1px solid #333; text-align:left;">
+                                            Tablero
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.escape}
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td  style="color: #333;  border-bottom: 1px solid #333; text-align:left;">
+                                            Motor
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.embrague}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td  style="color: #333; border-bottom: 1px solid #333; text-align:left;">
+                                            Caja de cambios
+                                        </td>
+                                        <td style="border-bottom: 1px solid #333;">
+                                            {!moto.caja}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- TERMINOS Y CONDICIONES Y SLOGAN -->
+            <div style="{!IF(asesor.pais == 'Colombia', 'margin-top: 20px;', 'margin-top: -20px;')} ">
+                <div
+                     style=" {!IF(asesor.pais == 'Colombia', 'visibility: visible;', 'visibility: hidden;')} text-align: center; background-color: #EFEBEA; font-weight: bold; color: #000; font-size: 16px; margin: 0 auto; width: 100%; height: 40px;  line-height: 40px;">
+                    <p style="font-weight: bold; ">
+                        {!moto.slogan}
+                    </p>
+
+                    
+                </div>
+              <div
+                     style="{!IF(asesor.pais != 'Colombia', 'visibility: visible;', 'visibility: hidden;')} text-align: center; background-color: #EFEBEA; font-weight: bold; color: #000; font-size: 16px; margin: 0 auto; width: 100%; height: 40px;  line-height: 40px;">
+
+                                        <p style="font-weight: bold; ">
+                        {!cliente.sloganPorPais}
+                    </p>
+                    
+                </div>
+                
+                <div style="width: 90%; margin-left: 50px; {!IF(asesor.pais == 'Colombia', 'margin-top: -25px;', 'margin-top: 10px;')}">
+                    <p style="font-size: 8px;">
+                        <apex:outputText value="{!cliente.terminos}" />  
+                    </p> 
+                </div>
+            </div>
+            
+            
+        </body>
+        
+    </html>
+</apex:page>
