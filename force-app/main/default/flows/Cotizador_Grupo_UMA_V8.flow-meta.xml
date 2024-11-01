@@ -649,7 +649,7 @@
     <assignments>
         <name>Asignar_products_Colombia</name>
         <label>Asignar products Colombia</label>
-        <locationX>2914</locationX>
+        <locationX>2917</locationX>
         <locationY>1166</locationY>
         <assignmentItems>
             <assignToReference>Quote_line_item.PricebookEntryId</assignToReference>
@@ -711,7 +711,7 @@
             <assignToReference>Quote_line_item.Descuento__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Promocion.Descuento_Num_rico__c</elementReference>
+                <elementReference>promotionDiscountFormula</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -1362,7 +1362,7 @@
     <decisions>
         <name>Tiene_pricebook</name>
         <label>Tiene pricebook</label>
-        <locationX>2532</locationX>
+        <locationX>2533</locationX>
         <locationY>523</locationY>
         <defaultConnector>
             <targetReference>Seleccion_de_productos</targetReference>
@@ -1530,7 +1530,7 @@
     <formulas>
         <name>Descuento_for</name>
         <dataType>Currency</dataType>
-        <expression>{!Promocion.Descuento_Num_rico__c} + 0</expression>
+        <expression>{!promotionDiscountFormula} + 0</expression>
         <scale>0</scale>
     </formulas>
     <formulas>
@@ -1611,6 +1611,12 @@
         <name>Pais_callout</name>
         <dataType>String</dataType>
         <expression>IF({!Obtener_opp_3.Pais__r.Name} = &quot;El Salvador&quot;, &quot;SV&quot;, IF({!Obtener_opp_3.Pais__r.Name} = &quot;Colombia&quot;, &quot;CO&quot;, &quot;False&quot;))</expression>
+    </formulas>
+    <formulas>
+        <name>promotionDiscountFormula</name>
+        <dataType>Currency</dataType>
+        <expression>IF(ISBLANK({!Promocion.Descuento_Num_rico__c}),0,{!Promocion.Descuento_Num_rico__c})</expression>
+        <scale>2</scale>
     </formulas>
     <formulas>
         <name>PromotionDiscountString</name>
@@ -2789,7 +2795,7 @@ TEXT(YEAR({!ValidPromotionsIteration.Fecha_de_Inicio__c}))</expression>
         <name>Obtener_pais_del_usuario_creador</name>
         <label>Obtener pais del usuario creador</label>
         <locationX>728</locationX>
-        <locationY>267</locationY>
+        <locationY>266</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Obtener_Departamento_del_usuario_creador</targetReference>
@@ -5057,12 +5063,12 @@ TEXT(YEAR({!ValidPromotionsIteration.Fecha_de_Inicio__c}))</expression>
         <allowPause>true</allowPause>
         <fields>
             <name>LogoUMA1</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;https://grupouma2023.file.force.com/sfc/servlet.shepherd/version/download/068PP000008nG2H?asPdf=false&amp;amp;operationContext=CHATTER&quot; alt=&quot;Logo-UMAQ.png&quot;&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;URL pública de PDF de cotización. *Esta URL se guarda en la cotización/oportunidad y se envía por MKT Cloud.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;https://grupouma2023.file.force.com/sfc/servlet.shepherd/version/download/068PP000008nG2H?asPdf=false&amp;amp;operationContext=CHATTER&quot; alt=&quot;Logo-UMAQ.png&quot;&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;URL pública de visualización de cotización. *Esta URL se guarda en la cotización/oportunidad y se envía por MKT Cloud.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>URL</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;PDF Link:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;{!Convert_to_PDF_2}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;{!Convert_to_PDF_2}&lt;/a&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Link:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;{!Convert_to_PDF_2}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;{!Convert_to_PDF_2}&lt;/a&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Enviar cotización vía WhatsApp</nextOrFinishButtonLabel>
@@ -5853,7 +5859,7 @@ TEXT(YEAR({!ValidPromotionsIteration.Fecha_de_Inicio__c}))</expression>
     <screens>
         <name>Seleccion_de_productos</name>
         <label>Selección de productos</label>
-        <locationX>2648</locationX>
+        <locationX>2651</locationX>
         <locationY>653</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
